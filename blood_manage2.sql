@@ -52,6 +52,12 @@ CREATE TABLE patient (
     Contact_Number VARCHAR(15)
 );
 
+CREATE TABLE lab_technician(
+    Technician_ID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Qualification VARCHAR(100)
+    );
+
 CREATE TABLE registers (
     Donor_ID INT,
     Employee_ID INT,
