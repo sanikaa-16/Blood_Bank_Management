@@ -69,7 +69,7 @@ CREATE TABLE donates (
 );
 
 
-CREATE TABLE stored (
+CREATE TABLE stored_in (
     Blood_ID_Number INT,
     Blood_Bank_ID INT,
     PRIMARY KEY (Blood_ID_Number, Blood_Bank_ID),
@@ -85,13 +85,6 @@ CREATE TABLE orders (
     FOREIGN KEY (Blood_Bank_ID) REFERENCES blood_bank(Blood_Bank_ID)
 );
 
-CREATE TABLE issues (
-    Blood_Bank_ID INT,
-    Patient_ID INT,
-    PRIMARY KEY (Blood_Bank_ID, Patient_ID),
-    FOREIGN KEY (Blood_Bank_ID) REFERENCES blood_bank(Blood_Bank_ID),
-    FOREIGN KEY (Patient_ID) REFERENCES patient(Patient_ID)
-);
 
 CREATE TABLE delivers (
     Hospital_Name VARCHAR(100),
