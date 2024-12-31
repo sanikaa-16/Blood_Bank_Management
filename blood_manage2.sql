@@ -1,109 +1,112 @@
-
-CREATE TABLE donor (
-    Donor_ID INT PRIMARY KEY,
-    Donor_Name VARCHAR(100),
+-- Table: DONOR
+CREATE TABLE DONOR (
+    Did INT PRIMARY KEY,
+    Dname VARCHAR(255),
     DOB DATE,
-    Contact_Number VARCHAR(15)
+    DContactNo VARCHAR(15),
+    Rid INT,
+    FOREIGN KEY (Rid) REFERENCES RECEPTIONIST(Rid)
 );
 
-
-CREATE TABLE receptionist (
-    Employee_ID INT PRIMARY KEY,
-    Employee_Name VARCHAR(100),
-    Contact_Number VARCHAR(15),
-    Blood_Bank_ID INT
+-- Table: HOSPITAL
+CREATE TABLE HOSPITAL (
+    Hid INT PRIMARY KEY,
+    Hname VARCHAR(255),
+    HContactNo VARCHAR(15)
 );
 
-
-CREATE TABLE blood_bank (
-    Blood_Bank_ID INT PRIMARY KEY,
-    Blood_Type VARCHAR(10)
+-- Table: PATIENT
+CREATE TABLE PATIENT (
+    Pid INT PRIMARY KEY,
+    Pname VARCHAR(255),
+    PContactNo VARCHAR(15),
+    -- Hid INT,
+    -- FOREIGN KEY (Hid) REFERENCES HOSPITAL(Hid)
 );
 
-
-CREATE TABLE blood (
-    Blood_ID_Number INT PRIMARY KEY,
-    Blood_Type VARCHAR(10),
+-- Table: BLOOD
+CREATE TABLE BLOOD (
+    Bid INT PRIMARY KEY,
+    Blood_bank_ID INT,
+    Blood_type VARCHAR(10),
     Cost DECIMAL(10, 2),
-    Blood_Bank_ID INT,
-    FOREIGN KEY (Blood_Bank_ID) REFERENCES blood_bank(Blood_Bank_ID)
+    Did INT,
+    Tid INT,
+    FOREIGN KEY (Blood_bank_ID) REFERENCES BLOOD_BANK(Blood_bank_ID),
+    FOREIGN KEY (Did) REFERENCES DONOR(Did),
+    FOREIGN KEY (Tid) REFERENCES LAB_TECHNICIAN(Tid)
 );
 
-
-CREATE TABLE blood_bank_manager (
-    Employee_ID INT PRIMARY KEY,
-    Name VARCHAR(100),
-    Contact_Number VARCHAR(15),
-    Blood_Bank_ID INT,
-    FOREIGN KEY (Blood_Bank_ID) REFERENCES blood_bank(Blood_Bank_ID)
+-- Table: BLOOD_BANK
+CREATE TABLE BLOOD_BANK (
+    Blood_bank_ID INT PRIMARY KEY,
+    BBname VARCHAR(255),
+    Issues VARCHAR(255),
+    Mid INT,
+    FOREIGN KEY (Mid) REFERENCES BLOOD_BANK_MANAGER(Mid)
 );
 
-
-CREATE TABLE hospital (
-    Hospital_Name VARCHAR(100) PRIMARY KEY,
-    Address VARCHAR(255),
-    Contact_Number VARCHAR(15)
+-- Table: BLOOD_BANK_MANAGER
+CREATE TABLE BLOOD_BANK_MANAGER (
+    Mid INT PRIMARY KEY,
+    BM_Name VARCHAR(255),
+    Mcontact VARCHAR(15)
 );
 
-
-CREATE TABLE patient (
-    Patient_ID INT PRIMARY KEY,
-    Patient_Name VARCHAR(100),
-    Contact_Number VARCHAR(15)
+-- Table: LAB_TECHNICIAN
+CREATE TABLE LAB_TECHNICIAN (
+    Tid INT PRIMARY KEY,
+    Blood_bank_ID INT,
+    Tech_name VARCHAR(255),
+    Qualification VARCHAR(255),
+    FOREIGN KEY (Blood_bank_ID) REFERENCES BLOOD_BANK(Blood_bank_ID)
 );
 
-CREATE TABLE lab_technician(
-    Technician_ID INT PRIMARY KEY,
-    Name VARCHAR(100),
-    Qualification VARCHAR(100)
-    );
-
-CREATE TABLE registers (
-    Donor_ID INT,
-    Employee_ID INT,
-    PRIMARY KEY (Donor_ID, Employee_ID),
-    FOREIGN KEY (Donor_ID) REFERENCES donor(Donor_ID),
-    FOREIGN KEY (Employee_ID) REFERENCES receptionist(Employee_ID)
+-- Table: RECEPTIONIST
+CREATE TABLE RECEPTIONIST (
+    Rid INT PRIMARY KEY,
+    Blood_bank_ID INT,
+    RContactNo VARCHAR(15),
+    Rname VARCHAR(255),
+    FOREIGN KEY (Blood_bank_ID) REFERENCES BLOOD_BANK(Blood_bank_ID)
 );
 
-CREATE TABLE donates (
-    Donor_ID INT,
-    Blood_ID_Number INT,
-    PRIMARY KEY (Donor_ID, Blood_ID_Number),
-    FOREIGN KEY (Donor_ID) REFERENCES donor(Donor_ID),
-    FOREIGN KEY (Blood_ID_Number) REFERENCES blood(Blood_ID_Number)
+-- Table: HOSPITAL_LOCATION
+CREATE TABLE HOSPITAL_LOCATION (
+    Hid INT PRIMARY KEY,
+    Haddress VARCHAR(255),
+    FOREIGN KEY (Hid) REFERENCES HOSPITAL(Hid)
 );
 
-
-CREATE TABLE stored_in (
-    Blood_ID_Number INT,
-    Blood_Bank_ID INT,
-    PRIMARY KEY (Blood_ID_Number, Blood_Bank_ID),
-    FOREIGN KEY (Blood_ID_Number) REFERENCES blood(Blood_ID_Number),
-    FOREIGN KEY (Blood_Bank_ID) REFERENCES blood_bank(Blood_Bank_ID)
+-- Table: DELIVERS
+CREATE TABLE DELIVERS (
+    Hid INT,
+    Pid INT,
+    Time DATETIME,
+    Bid INT,
+    PRIMARY KEY (Hid, Pid, Bid),
+    FOREIGN KEY (Hid) REFERENCES HOSPITAL(Hid),
+    FOREIGN KEY (Pid) REFERENCES PATIENT(Pid),
+    FOREIGN KEY (Bid) REFERENCES BLOOD(Bid)
 );
 
-CREATE TABLE orders (
-    Hospital_Name VARCHAR(100),
-    Blood_Bank_ID INT,
-    PRIMARY KEY (Hospital_Name, Blood_Bank_ID),
-    FOREIGN KEY (Hospital_Name) REFERENCES hospital(Hospital_Name),
-    FOREIGN KEY (Blood_Bank_ID) REFERENCES blood_bank(Blood_Bank_ID)
+-- Table: ORDERS
+CREATE TABLE ORDERS (
+    Hid INT,
+    Blood_bank_ID INT,
+    Qty INT,
+    Bid INT,
+    PRIMARY KEY (Hid, Blood_bank_ID, Bid),
+    FOREIGN KEY (Hid) REFERENCES HOSPITAL(Hid),
+    FOREIGN KEY (Blood_bank_ID) REFERENCES BLOOD_BANK(Blood_bank_ID),
+    FOREIGN KEY (Bid) REFERENCES BLOOD(Bid)
 );
 
-
-CREATE TABLE delivers (
-    Hospital_Name VARCHAR(100),
-    Patient_ID INT,
-    PRIMARY KEY (Hospital_Name, Patient_ID),
-    FOREIGN KEY (Hospital_Name) REFERENCES hospital(Hospital_Name),
-    FOREIGN KEY (Patient_ID) REFERENCES patient(Patient_ID)
-);
-
-CREATE TABLE manages (
-    Blood_Bank_ID INT,
-    Employee_ID INT,
-    PRIMARY KEY (Blood_Bank_ID, Employee_ID),
-    FOREIGN KEY (Blood_Bank_ID) REFERENCES blood_bank(Blood_Bank_ID),
-    FOREIGN KEY (Employee_ID) REFERENCES blood_bank_manager(Employee_ID)
+-- Table: EMPLOYED_BY
+CREATE TABLE EMPLOYED_BY (
+    Rid INT,
+    Blood_bank_ID INT,
+    PRIMARY KEY (Rid, Blood_bank_ID),
+    FOREIGN KEY (Rid) REFERENCES RECEPTIONIST(Rid),
+    FOREIGN KEY (Blood_bank_ID) REFERENCES BLOOD_BANK(Blood_bank_ID)
 );
