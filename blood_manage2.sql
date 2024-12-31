@@ -20,8 +20,8 @@ CREATE TABLE PATIENT (
     Pid INT PRIMARY KEY,
     Pname VARCHAR(255),
     PContactNo VARCHAR(15),
-    -- Hid INT,
-    -- FOREIGN KEY (Hid) REFERENCES HOSPITAL(Hid)
+    Hid INT,
+    FOREIGN KEY (Hid) REFERENCES HOSPITAL(Hid)
 );
 
 -- Table: BLOOD
